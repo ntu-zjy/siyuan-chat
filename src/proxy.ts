@@ -26,6 +26,14 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|api/auth|export|sign-in|sign-up).*)",
+    // Paths listed here BYPASS the auth gate. Add new public paths in two places:
+    //   1. here (so the proxy doesn't run)
+    //   2. confirm the underlying route works without `getSession()`
+    // Public additions vs upstream:
+    //   - api/health        — Sealos liveness/readiness probe (must respond 200)
+    //   - api/payments/zpay — Zpay async notify + sync return (signed via MD5,
+    //                         caller is the Zpay gateway, not a logged-in user)
+    //   - pricing           — public pricing page so prospects can see plans
+    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|api/auth|api/health|api/payments/zpay|export|sign-in|sign-up|pricing).*)",
   ],
 };

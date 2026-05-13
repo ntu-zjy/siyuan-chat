@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+      # MVP iteration: build a `cn-latest`-style image off feat/cn-payment so
+      # Sealos can pull pre-merge for staging. Remove once we cut a release.
+      - feat/cn-payment
   release:
     types: [published]
   workflow_dispatch:
