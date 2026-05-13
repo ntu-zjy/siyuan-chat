@@ -2,7 +2,7 @@
 import { betterAuth, type BetterAuthOptions } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { admin as adminPlugin } from "better-auth/plugins";
+import { admin as adminPlugin, phoneNumber } from "better-auth/plugins";
 import { pgDb } from "lib/db/pg/db.pg";
 import { headers } from "next/headers";
 import {
@@ -16,6 +16,7 @@ import logger from "logger";
 import { userRepository } from "lib/db/repository";
 import { DEFAULT_USER_ROLE, USER_ROLES } from "app-types/roles";
 import { admin, editor, user, ac } from "./roles";
+import { sendSms } from "lib/sms/aliyun";
 
 const {
   emailAndPasswordEnabled,
@@ -35,6 +36,18 @@ const options = {
         editor,
         user,
       },
+    }),
+    phoneNumber({
+      sendOTP: async ({ phoneNumber, code }) => {
+        await sendSms(phoneNumber, code);
+      },
+      signUpOnVerification: {
+        getTempEmail: (phone) => `${phone}@siyuan.local`,
+        getTempName: (phone) => `用户${phone.slice(-4)}`,
+      },
+      otpLength: 6,
+      expiresIn: 300,
+      phoneNumberValidator: (phone) => /^1[3-9]\d{9}$/.test(phone),
     }),
     nextCookies(),
   ],

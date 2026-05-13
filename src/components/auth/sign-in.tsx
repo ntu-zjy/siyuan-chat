@@ -23,6 +23,8 @@ import { GoogleIcon } from "ui/google-icon";
 import { useTranslations } from "next-intl";
 import { MicrosoftIcon } from "ui/microsoft-icon";
 import { SocialAuthenticationProvider } from "app-types/authentication";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PhoneSignIn } from "@/components/auth/phone-sign-in";
 
 export default function SignIn({
   emailAndPasswordEnabled,
@@ -81,7 +83,71 @@ export default function SignIn({
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col">
-          {emailAndPasswordEnabled && !isFirstUser && (
+          {!isFirstUser && (
+            <Tabs defaultValue="phone" className="w-full">
+              {emailAndPasswordEnabled && (
+                <TabsList className="grid w-full grid-cols-2 mb-4">
+                  <TabsTrigger value="phone">{t("phoneTab")}</TabsTrigger>
+                  <TabsTrigger value="email">{t("emailTab")}</TabsTrigger>
+                </TabsList>
+              )}
+              <TabsContent value="phone">
+                <PhoneSignIn />
+              </TabsContent>
+              {emailAndPasswordEnabled && (
+                <TabsContent value="email">
+                  <div className="flex flex-col gap-6">
+                    <div className="grid gap-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        id="email"
+                        disabled={loading}
+                        value={formData.email}
+                        onChange={(e) => setFormData({ email: e.target.value })}
+                        type="email"
+                        placeholder="user@example.com"
+                        required
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <div className="flex items-center">
+                        <Label htmlFor="password">Password</Label>
+                      </div>
+                      <Input
+                        id="password"
+                        disabled={loading}
+                        value={formData.password}
+                        placeholder="********"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            emailAndPasswordSignIn();
+                          }
+                        }}
+                        onChange={(e) =>
+                          setFormData({ password: e.target.value })
+                        }
+                        type="password"
+                        required
+                      />
+                    </div>
+                    <Button
+                      className="w-full"
+                      onClick={emailAndPasswordSignIn}
+                      disabled={loading}
+                      data-testid="signin-submit-button"
+                    >
+                      {loading ? (
+                        <Loader className="size-4 animate-spin ml-1" />
+                      ) : (
+                        t("signIn")
+                      )}
+                    </Button>
+                  </div>
+                </TabsContent>
+              )}
+            </Tabs>
+          )}
+          {isFirstUser && emailAndPasswordEnabled && (
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>

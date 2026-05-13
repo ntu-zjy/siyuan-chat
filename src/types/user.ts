@@ -26,12 +26,16 @@ export type BasicUser = Omit<
   | "banned"
   | "banReason"
   | "banExpires"
+  | "phoneNumber"
+  | "phoneNumberVerified"
 > & {
   image?: string | null;
   role?: string | null;
   banned?: boolean | null;
   banReason?: string | null;
   banExpires?: Date | null;
+  phoneNumber?: string | null;
+  phoneNumberVerified?: boolean | null;
 };
 
 export interface BasicUserWithLastLogin extends BasicUser {
