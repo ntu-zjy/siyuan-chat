@@ -28,6 +28,24 @@ compose.yml
 *.pem
 *.local.*
 
+# env files — MUST exclude before publishing image publicly.
+# `*.local.*` above does NOT match `.env.local` (glob requires content
+# after `.local.`). Next.js reads .env.local during `pnpm build` and bakes
+# any NEXT_PUBLIC_* values into client bundles, which would leak in a
+# public image. Keeping .env.example as reference.
+.env
+.env.*
+!.env.example
+
+# git history + repo metadata — not needed in build context, bloats image
+.git
+.github
+
+# editor / agent state
+.claude
+.idea
+.vscode
+
 # debug
 npm-debug.log*
 yarn-debug.log*
