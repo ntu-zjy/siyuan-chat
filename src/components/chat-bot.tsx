@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import PromptInput from "./prompt-input";
 import clsx from "clsx";
 import { appStore } from "@/app/store";
-import { cn, createDebounce, generateUUID, truncateString } from "lib/utils";
+import { cn, generateUUID, truncateString } from "lib/utils";
 import { ErrorMessage, PreviewMessage } from "./message";
 import { ChatGreeting } from "./chat-greeting";
 
@@ -64,8 +64,6 @@ const Particles = dynamic(() => import("ui/particles"), {
   ssr: false,
 });
 
-const debounce = createDebounce();
-
 const firstTimeStorage = getStorageManager("IS_FIRST");
 const isFirstTime = firstTimeStorage.get() ?? true;
 firstTimeStorage.set(false);
@@ -113,7 +111,7 @@ export default function ChatBot({ threadId, initialMessages }: Props) {
     threadId,
   });
 
-  const [showParticles, setShowParticles] = useState(isFirstTime);
+  const [showParticles, setShowParticles] = useState(false);
 
   const onFinish = useCallback(() => {
     const messages = latestRef.current.messages;
@@ -323,7 +321,6 @@ export default function ChatBot({ threadId, initialMessages }: Props) {
 
   const handleFocus = useCallback(() => {
     setShowParticles(false);
-    debounce(() => setShowParticles(true), 60000);
   }, []);
 
   const handleScroll = useCallback(() => {
