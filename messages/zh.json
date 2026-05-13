@@ -52,7 +52,21 @@
       "noAccount": "没有账户？",
       "signUp": "注册",
       "signIn": "登录",
-      "orContinueWith": "或继续使用"
+      "orContinueWith": "或继续使用",
+      "phoneTab": "手机号登录",
+      "emailTab": "邮箱登录",
+      "phone": "手机号",
+      "phonePlaceholder": "请输入手机号",
+      "phoneInvalid": "请输入正确的 11 位手机号",
+      "sendCode": "发送验证码",
+      "sendCodeFailed": "验证码发送失败",
+      "codeSent": "验证码已发送",
+      "codeResendIn": "{seconds}s 后可重发",
+      "otp": "验证码",
+      "otpPlaceholder": "请输入 6 位验证码",
+      "otpInvalid": "请输入 6 位验证码",
+      "signInWithPhone": "登录",
+      "signInFailed": "登录失败"
     },
     "SignUp": {
       "title": "创建账户",
@@ -69,7 +83,7 @@
       "createAccount": "创建账户"
     },
     "Intro": {
-      "description": "欢迎来到 MCP 聊天机器人。登录以体验我们的 AI 驱动的对话工具。"
+      "description": "欢迎使用思源 AI。登录以开启你的智能对话之旅。"
     }
   },
   "Chat": {
@@ -253,7 +267,9 @@
     "reportAnIssue": "报告问题",
     "joinCommunity": "加入社区",
     "workflow": "工作流",
-    "userSettings": "用户设置"
+    "userSettings": "用户设置",
+    "billing": "订阅与账单",
+    "upgrade": "升级方案"
   },
   "Archive": {
     "title": "归档",

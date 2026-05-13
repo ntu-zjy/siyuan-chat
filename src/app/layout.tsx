@@ -19,9 +19,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "better-chatbot",
-  description:
-    "Better Chatbot is a chatbot that uses the Tools to answer questions.",
+  title: "思源 AI",
+  description: "思源 AI — 面向中国大陆的智能对话助手",
 };
 
 export default async function RootLayout({

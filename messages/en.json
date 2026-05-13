@@ -164,7 +164,21 @@
       "noAccount": "Don't have an account? ",
       "signUp": "Sign up",
       "signIn": "Sign in",
-      "orContinueWith": "OR CONTINUE WITH"
+      "orContinueWith": "OR CONTINUE WITH",
+      "phoneTab": "Phone",
+      "emailTab": "Email",
+      "phone": "Phone",
+      "phonePlaceholder": "Enter your phone number",
+      "phoneInvalid": "Please enter a valid 11-digit phone number",
+      "sendCode": "Send code",
+      "sendCodeFailed": "Failed to send code",
+      "codeSent": "Code sent",
+      "codeResendIn": "Resend in {seconds}s",
+      "otp": "Verification code",
+      "otpPlaceholder": "Enter 6-digit code",
+      "otpInvalid": "Please enter the 6-digit code",
+      "signInWithPhone": "Sign in",
+      "signInFailed": "Sign-in failed"
     },
     "SignUp": {
       "title": "Create an account",
@@ -188,7 +202,7 @@
       "createAccount": "Create account"
     },
     "Intro": {
-      "description": "Welcome to better-chatbot. Sign in to experience our AI-powered conversational tools."
+      "description": "Welcome to 思源 AI. Sign in to experience our AI-powered conversational tools."
     }
   },
   "Chat": {
@@ -395,7 +409,9 @@
     "showLessChats": "Show less",
     "reportAnIssue": "Report an issue",
     "joinCommunity": "Join Community",
-    "userSettings": "User Settings"
+    "userSettings": "User Settings",
+    "billing": "Subscription & billing",
+    "upgrade": "Upgrade plan"
   },
   "Archive": {
     "title": "Archive",
