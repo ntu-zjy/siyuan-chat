@@ -4,7 +4,8 @@ import { appStore } from "@/app/store";
 import { useChatModels } from "@/hooks/queries/use-chat-models";
 import { ChatModel } from "app-types/chat";
 import { cn } from "lib/utils";
-import { CheckIcon, ChevronDown } from "lucide-react";
+import { CheckIcon, ChevronDown, Lock } from "lucide-react";
+import Link from "next/link";
 import { Fragment, memo, PropsWithChildren, useEffect, useState } from "react";
 import { Button } from "ui/button";
 
@@ -100,9 +101,10 @@ export const SelectModel = (props: PropsWithChildren<SelectModelProps>) => {
                   {provider.models.map((item) => (
                     <CommandItem
                       key={item.name}
-                      disabled={!provider.hasAPIKey}
+                      disabled={!provider.hasAPIKey || item.locked}
                       className="cursor-pointer"
                       onSelect={() => {
+                        if (item.locked) return;
                         setModel({
                           provider: provider.provider,
                           model: item.name,
@@ -126,11 +128,20 @@ export const SelectModel = (props: PropsWithChildren<SelectModelProps>) => {
                         <div className="ml-3" />
                       )}
                       <span className="pr-2">{item.name}</span>
-                      {item.isToolCallUnsupported && (
+                      {item.locked ? (
+                        <Link
+                          href="/pricing"
+                          className="ml-auto flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                          onClick={(e) => e.stopPropagation()}
+                          title="升级解锁"
+                        >
+                          <Lock className="size-3" />
+                        </Link>
+                      ) : item.isToolCallUnsupported ? (
                         <div className="ml-auto flex items-center gap-1 text-xs text-muted-foreground">
                           No tools
                         </div>
-                      )}
+                      ) : null}
                     </CommandItem>
                   ))}
                 </CommandGroup>

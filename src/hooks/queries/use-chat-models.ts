@@ -12,6 +12,7 @@ export const useChatModels = (options?: SWRConfiguration) => {
         isToolCallUnsupported: boolean;
         isImageInputUnsupported: boolean;
         supportedFileMimeTypes: string[];
+        locked?: boolean;
       }[];
     }[]
   >("/api/chat/models", fetcher, {

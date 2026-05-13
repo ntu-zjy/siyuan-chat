@@ -26,7 +26,10 @@ import {
   MoonStar,
   ChevronRight,
   Settings,
+  CreditCard,
+  Sparkles,
 } from "lucide-react";
+import Link from "next/link";
 import { useTheme } from "next-themes";
 import { appStore } from "@/app/store";
 import { BASE_THEMES, COOKIE_KEY_LOCALE, SUPPORTED_LOCALES } from "lib/const";
@@ -165,6 +168,18 @@ export function AppSidebarUserInner(props: {
             >
               <Settings className="size-4 text-foreground" />
               <span>{t("userSettings")}</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild className="cursor-pointer">
+              <Link href="/billing">
+                <CreditCard className="size-4 text-foreground" />
+                <span>{t("billing")}</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild className="cursor-pointer">
+              <Link href="/pricing">
+                <Sparkles className="size-4 text-foreground" />
+                <span>{t("upgrade")}</span>
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={logout} className="cursor-pointer">

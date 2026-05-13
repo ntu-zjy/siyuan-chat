@@ -45,6 +45,7 @@ import {
 import { getSession } from "auth/server";
 import { colorize } from "consola/utils";
 import { generateUUID } from "lib/utils";
+import { checkQuota, recordUsage, QuotaError } from "lib/billing/quota";
 import { nanoBananaTool, openaiImageTool } from "lib/ai/tools/image";
 import { ImageToolName } from "lib/ai/tools";
 import { buildCsvIngestionPreviewParts } from "@/lib/ai/ingest/csv-ingest";
@@ -74,6 +75,8 @@ export async function POST(request: Request) {
       mentions = [],
       attachments = [],
     } = chatApiSchemaRequestBodySchema.parse(json);
+
+    await checkQuota(session.user.id, chatModel?.model);
 
     const model = customModelProvider.getModel(chatModel);
 
@@ -364,6 +367,10 @@ export async function POST(request: Request) {
           });
         }
 
+        if (metadata.usage) {
+          await recordUsage(session.user.id, chatModel?.model, metadata.usage);
+        }
+
         if (agent) {
           agentRepository.updateAgent(agent.id, session.user.id, {
             updatedAt: new Date(),
@@ -378,6 +385,12 @@ export async function POST(request: Request) {
       stream,
     });
   } catch (error: any) {
+    if (error instanceof QuotaError) {
+      return Response.json(
+        { message: error.message, reason: error.reason, detail: error.detail },
+        { status: 402 },
+      );
+    }
     logger.error(error);
     return Response.json({ message: error.message }, { status: 500 });
   }
