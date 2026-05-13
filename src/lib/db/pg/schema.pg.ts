@@ -12,6 +12,9 @@ import {
   unique,
   varchar,
   index,
+  integer,
+  bigint,
+  bigserial,
 } from "drizzle-orm/pg-core";
 import { isNotNull } from "drizzle-orm";
 import { DBWorkflow, DBEdge, DBNode } from "app-types/workflow";
@@ -115,6 +118,10 @@ export const UserTable = pgTable("user", {
   banReason: text("ban_reason"),
   banExpires: timestamp("ban_expires"),
   role: text("role").notNull().default("user"),
+  phoneNumber: text("phone_number").unique(),
+  phoneNumberVerified: boolean("phone_number_verified")
+    .default(false)
+    .notNull(),
 });
 
 // Role tables removed - using Better Auth's built-in role system
@@ -379,3 +386,96 @@ export const ChatExportCommentTable = pgTable("chat_export_comment", {
 export type ArchiveEntity = typeof ArchiveTable.$inferSelect;
 export type ArchiveItemEntity = typeof ArchiveItemTable.$inferSelect;
 export type BookmarkEntity = typeof BookmarkTable.$inferSelect;
+
+// === Billing: plans / subscriptions / usage logs ===
+export const PlanTable = pgTable("plan", {
+  code: varchar("code", { length: 32 }).primaryKey(),
+  name: text("name").notNull(),
+  monthlyPriceCents: integer("monthly_price_cents").notNull(),
+  yearlyPriceCents: integer("yearly_price_cents"),
+  monthlyMsgLimit: integer("monthly_msg_limit").notNull(),
+  monthlyTokenLimit: bigint("monthly_token_limit", {
+    mode: "number",
+  }).notNull(),
+  allowedModelPatterns: json("allowed_model_patterns")
+    .$type<string[]>()
+    .notNull(),
+  features: json("features").$type<string[]>().notNull().default([]),
+  displayOrder: integer("display_order").notNull().default(0),
+  active: boolean("active").notNull().default(true),
+});
+
+export const SubscriptionTable = pgTable(
+  "subscription",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => UserTable.id, { onDelete: "cascade" }),
+    planCode: varchar("plan_code", { length: 32 })
+      .notNull()
+      .references(() => PlanTable.code),
+    status: varchar("status", { length: 16 }).notNull(),
+    startedAt: timestamp("started_at").notNull().defaultNow(),
+    expiresAt: timestamp("expires_at").notNull(),
+    autoRenew: boolean("auto_renew").notNull().default(false),
+    sourceOrderId: uuid("source_order_id"),
+    createdAt: timestamp("created_at")
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: timestamp("updated_at")
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+  },
+  (t) => [
+    index("subscription_user_status_idx").on(t.userId, t.status),
+    index("subscription_expires_idx").on(t.expiresAt),
+  ],
+);
+
+export const UsageLogTable = pgTable(
+  "usage_log",
+  {
+    id: bigserial("id", { mode: "number" }).primaryKey(),
+    userId: uuid("user_id").notNull(),
+    model: text("model").notNull(),
+    promptTokens: integer("prompt_tokens").notNull().default(0),
+    completionTokens: integer("completion_tokens").notNull().default(0),
+    totalTokens: integer("total_tokens").notNull().default(0),
+    costCents: integer("cost_cents").notNull().default(0),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("usage_log_user_created_idx").on(t.userId, t.createdAt)],
+);
+
+export type PlanEntity = typeof PlanTable.$inferSelect;
+export type SubscriptionEntity = typeof SubscriptionTable.$inferSelect;
+export type UsageLogEntity = typeof UsageLogTable.$inferSelect;
+
+export const OrderTable = pgTable(
+  "order",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => UserTable.id, { onDelete: "cascade" }),
+    planCode: varchar("plan_code", { length: 32 })
+      .notNull()
+      .references(() => PlanTable.code),
+    period: varchar("period", { length: 16 }).notNull(),
+    amountCents: integer("amount_cents").notNull(),
+    status: varchar("status", { length: 16 }).notNull().default("pending"),
+    provider: varchar("provider", { length: 16 }).notNull().default("zpay"),
+    providerPayType: varchar("provider_pay_type", { length: 16 }),
+    providerTradeNo: text("provider_trade_no"),
+    paidAt: timestamp("paid_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    expiresAt: timestamp("expires_at").notNull(),
+  },
+  (t) => [
+    index("order_user_status_idx").on(t.userId, t.status),
+    index("order_status_expires_idx").on(t.status, t.expiresAt),
+  ],
+);
+
+export type OrderEntity = typeof OrderTable.$inferSelect;
