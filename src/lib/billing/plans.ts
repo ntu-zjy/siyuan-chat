@@ -12,7 +12,7 @@ export const FALLBACK_FREE_PLAN: PlanEntity = {
   yearlyPriceCents: null,
   monthlyMsgLimit: 50,
   monthlyTokenLimit: 100_000,
-  allowedModelPatterns: ["qwen-turbo*", "deepseek-chat*", "*:free"],
+  allowedModelPatterns: ["deepseek-v4-flash:free"],
   features: [],
   displayOrder: 0,
   active: true,

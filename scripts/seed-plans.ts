@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { eq } from "drizzle-orm";
 import { pgDb } from "../src/lib/db/pg/db.pg";
 import { PlanTable } from "../src/lib/db/pg/schema.pg";
 import { DEFAULT_BILLING_PLAN_ROWS } from "../src/lib/billing/default-plan-rows";
@@ -24,6 +25,12 @@ async function seed() {
       });
     console.log(`✅ Seeded plan: ${plan.code}`);
   }
+
+  await pgDb
+    .update(PlanTable)
+    .set({ active: false })
+    .where(eq(PlanTable.code, "plus"));
+
   process.exit(0);
 }
 

@@ -27,7 +27,8 @@ export default async function PricingPage() {
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-3">选择适合你的方案</h1>
         <p className="text-muted-foreground">
-          随时升降级，按月或按年订阅，国内支付（支付宝/微信）
+          模型均由 OpenRouter
+          统一接入；随时升降级，按月或按年订阅，国内支付（支付宝/微信）
         </p>
       </div>
       <PricingCards plans={plans} currentPlanCode={currentPlan?.code ?? null} />

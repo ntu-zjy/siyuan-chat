@@ -38,10 +38,10 @@ export function PricingCards({
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
       {plans.map((plan) => {
         const isCurrent = plan.code === currentPlanCode;
-        const isHighlighted = plan.code === "plus";
+        const isHighlighted = plan.code === "standard";
         return (
           <Card
             key={plan.code}

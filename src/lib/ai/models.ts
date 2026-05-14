@@ -36,8 +36,10 @@ const staticModels = {
   },
   anthropic: {
     "sonnet-4.5": openrouter("anthropic/claude-sonnet-4.5"),
+    "sonnet-4.6": openrouter("anthropic/claude-sonnet-4.6"),
     "haiku-4.5": openrouter("anthropic/claude-haiku-4.5"),
     "opus-4.5": openrouter("anthropic/claude-opus-4.5"),
+    "opus-4.7": openrouter("anthropic/claude-opus-4.7"),
   },
   xai: {
     "grok-4-1-fast": openrouter("x-ai/grok-4-1-fast"),
@@ -55,6 +57,8 @@ const staticModels = {
     "qwen3-coder:free": openrouter("qwen/qwen3-coder:free"),
     "deepseek-r1:free": openrouter("deepseek/deepseek-r1-0528:free"),
     "deepseek-v3:free": openrouter("deepseek/deepseek-chat-v3-0324:free"),
+    "deepseek-v4-flash:free": openrouter("deepseek/deepseek-v4-flash:free"),
+    "deepseek-v4-pro": openrouter("deepseek/deepseek-v4-pro"),
     "gemini-2.0-flash-exp:free": openrouter("google/gemini-2.0-flash-exp:free"),
   },
 };
@@ -115,7 +119,15 @@ registerFileSupport(
   ANTHROPIC_FILE_MIME_TYPES,
 );
 registerFileSupport(
-  staticModels.anthropic["opus-4.1"],
+  staticModels.anthropic["sonnet-4.6"],
+  ANTHROPIC_FILE_MIME_TYPES,
+);
+registerFileSupport(
+  staticModels.anthropic["opus-4.5"],
+  ANTHROPIC_FILE_MIME_TYPES,
+);
+registerFileSupport(
+  staticModels.anthropic["opus-4.7"],
   ANTHROPIC_FILE_MIME_TYPES,
 );
 
