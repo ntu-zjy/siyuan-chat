@@ -6,18 +6,11 @@ import { PlanTable } from "lib/db/pg/schema.pg";
 import { DEFAULT_BILLING_PLAN_ROWS } from "./default-plan-rows";
 
 /**
- * When no active `plan` rows exist (common after migrate without `seed-plans`),
- * upsert built-in defaults so pricing and checkout work.
+ * Keeps built-in `plan` rows in sync with {@link DEFAULT_BILLING_PLAN_ROWS}.
+ * Always upserts (pricing/checkout read from DB; old deploys otherwise keep
+ * stale free/plus/pro rows forever).
  */
 export async function ensureDefaultBillingPlans(): Promise<void> {
-  const anyActive = await pgDb
-    .select({ code: PlanTable.code })
-    .from(PlanTable)
-    .where(eq(PlanTable.active, true))
-    .limit(1);
-
-  if (anyActive.length > 0) return;
-
   for (const plan of DEFAULT_BILLING_PLAN_ROWS) {
     await pgDb
       .insert(PlanTable)
@@ -37,4 +30,9 @@ export async function ensureDefaultBillingPlans(): Promise<void> {
         },
       });
   }
+
+  await pgDb
+    .update(PlanTable)
+    .set({ active: false })
+    .where(eq(PlanTable.code, "plus"));
 }
