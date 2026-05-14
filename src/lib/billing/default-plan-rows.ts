@@ -1,0 +1,65 @@
+import { PlanTable } from "lib/db/pg/schema.pg";
+
+/** Default billing rows: single source for DB seed and auto-heal when `plan` is empty. */
+export const DEFAULT_BILLING_PLAN_ROWS: (typeof PlanTable.$inferInsert)[] = [
+  {
+    code: "free",
+    name: "免费版",
+    monthlyPriceCents: 0,
+    yearlyPriceCents: null,
+    monthlyMsgLimit: 50,
+    monthlyTokenLimit: 100_000,
+    allowedModelPatterns: ["*:free"],
+    features: [
+      "免费模型 (DeepSeek / Qwen / GPT-OSS)",
+      "每月 50 条消息",
+      "10 万 token",
+    ],
+    displayOrder: 0,
+    active: true,
+  },
+  {
+    code: "plus",
+    name: "Plus 版",
+    monthlyPriceCents: 1900,
+    yearlyPriceCents: 19_000,
+    monthlyMsgLimit: 2000,
+    monthlyTokenLimit: 5_000_000,
+    allowedModelPatterns: [
+      "*:free",
+      "haiku-4.5",
+      "gemini-2.5-flash*",
+      "gpt-4.1-mini",
+      "o4-mini",
+      "grok-3-mini",
+      "grok-4-1-fast",
+      "kimi-k2-instruct",
+    ],
+    features: [
+      "中档模型 (haiku-4.5 / gpt-4.1-mini / gemini-2.5-flash)",
+      "每月 2000 条消息",
+      "500 万 token",
+      "MCP 工具",
+    ],
+    displayOrder: 1,
+    active: true,
+  },
+  {
+    code: "pro",
+    name: "Pro 版",
+    monthlyPriceCents: 9900,
+    yearlyPriceCents: 99_000,
+    monthlyMsgLimit: -1,
+    monthlyTokenLimit: 50_000_000,
+    allowedModelPatterns: ["*"],
+    features: [
+      "全部顶级模型 (gpt-5.1 / sonnet-4.5 / opus-4.5 / gemini-3-pro / grok-4-1)",
+      "无限消息",
+      "5000 万 token",
+      "工作流编排",
+      "优先支持",
+    ],
+    displayOrder: 2,
+    active: true,
+  },
+];

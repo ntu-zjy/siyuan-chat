@@ -2,12 +2,15 @@ import { pgDb } from "lib/db/pg/db.pg";
 import { PlanTable } from "lib/db/pg/schema.pg";
 import { eq, asc } from "drizzle-orm";
 import { getSession } from "auth/server";
+import { ensureDefaultBillingPlans } from "lib/billing/ensure-default-plans";
 import { resolvePlan } from "lib/billing/quota";
 import { PricingCards } from "@/components/billing/pricing-cards";
 
 export const dynamic = "force-dynamic";
 
 export default async function PricingPage() {
+  await ensureDefaultBillingPlans();
+
   const plans = await pgDb
     .select()
     .from(PlanTable)

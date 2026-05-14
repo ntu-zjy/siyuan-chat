@@ -2,6 +2,7 @@ import { getSession } from "auth/server";
 import { pgDb } from "lib/db/pg/db.pg";
 import { OrderTable, PlanTable } from "lib/db/pg/schema.pg";
 import { eq } from "drizzle-orm";
+import { ensureDefaultBillingPlans } from "lib/billing/ensure-default-plans";
 import { buildSubmitUrl, isZpayConfigured } from "lib/billing/zpay";
 import { z } from "zod";
 
@@ -41,6 +42,8 @@ export async function POST(req: Request) {
       { status: 503 },
     );
   }
+
+  await ensureDefaultBillingPlans();
 
   const [plan] = await pgDb
     .select()
